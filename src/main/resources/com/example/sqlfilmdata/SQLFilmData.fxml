@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox alignment="CENTER" prefHeight="817.0" prefWidth="1209.0" spacing="20.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.sqlfilmdata.SQLController">
+    <padding>
+        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+    </padding>
+   <MenuBar prefHeight="24.0" prefWidth="1169.0">
+     <menus>
+       <Menu mnemonicParsing="false" text="File">
+         <items>
+           <MenuItem fx:id="openFile" mnemonicParsing="false" text="Open" />
+               <MenuItem fx:id="saveFile" mnemonicParsing="false" text="Save" />
+         </items>
+       </Menu>
+       <Menu mnemonicParsing="false" text="Help">
+         <items>
+           <MenuItem fx:id="about" mnemonicParsing="false" onAction="#about" text="About" />
+         </items>
+       </Menu>
+     </menus>
+   </MenuBar>
+   <AnchorPane prefHeight="45.0" prefWidth="850.0">
+      <children>
+         <TextField fx:id="TFUserName" layoutX="8.0" layoutY="5.0" prefHeight="25.0" prefWidth="137.0" promptText="user name" />
+         <PasswordField fx:id="TFPassword" layoutX="156.0" layoutY="5.0" promptText="pass word" />
+         <Button fx:id="BtDelete" layoutX="560.0" layoutY="5.0" mnemonicParsing="false" onAction="#allActions" prefHeight="25.0" prefWidth="149.0" text="Delete Data Setting" />
+         <Button fx:id="BtGetConnction" defaultButton="true" layoutX="321.0" layoutY="5.0" mnemonicParsing="false" onAction="#allActions" prefHeight="25.0" prefWidth="229.0" text="Get Connection" />
+      </children>
+   </AnchorPane>
+   <TabPane prefHeight="690.0" prefWidth="1169.0" tabClosingPolicy="UNAVAILABLE">
+     <tabs>
+       <Tab fx:id="clmId" text="Film">
+         <content>
+           <AnchorPane prefHeight="605.0" prefWidth="1169.0"> 
+                  <children>
+                     <TableView fx:id="table_Film" layoutX="183.0" layoutY="82.0" onMouseClicked="#getSelected" prefHeight="564.0" prefWidth="981.0" visible="false">
+                        <columns>
+                           <TableColumn fx:id="col_id" prefWidth="26.0" text="ID" />
+                           <TableColumn fx:id="clmTitle" prefWidth="146.0" text="Title" />
+                           <TableColumn fx:id="clmDescrip" prefWidth="566.0" text="Description" />
+                           <TableColumn fx:id="clmRlesYear" minWidth="0.0" prefWidth="48.0" text="Year" />
+                           <TableColumn fx:id="clmLanguage" prefWidth="60.0" text="Language" />
+                           <TableColumn fx:id="clmRentrate" prefWidth="55.0" text="R. Rate" />
+                           <TableColumn fx:id="clmRentDurat" prefWidth="78.0" text="R. Duration" />
+                        </columns>
+                     </TableView>
+                     <TextField fx:id="tFSearch" editable="false" layoutX="183.0" layoutY="43.0" onKeyTyped="#search" prefHeight="25.0" prefWidth="298.0" promptText="search" />
+                     <TextField fx:id="tFID" editable="false" layoutX="14.0" layoutY="43.0" promptText="id" />
+                     <TextField fx:id="tFTitle" editable="false" layoutX="14.0" layoutY="81.0" promptText="title" />
+                     <TextField fx:id="tFDescrip" editable="false" layoutX="14.0" layoutY="114.0" promptText="description" />
+                     <TextField fx:id="tFReleaseyear" editable="false" layoutX="14.0" layoutY="150.0" promptText="release year" />
+                     <TextField fx:id="tFLanguage" editable="false" layoutX="14.0" layoutY="185.0" promptText="language.name" />
+                     <TextField fx:id="tFRentalRage" editable="false" layoutX="14.0" layoutY="219.0" promptText="rental age" />
+                     <TextField fx:id="tFRentalDuration" editable="false" layoutX="14.0" layoutY="256.0" promptText="rental duration" />
+                     <Button fx:id="btAd" disable="true" layoutX="14.0" layoutY="315.0" mnemonicParsing="false" onAction="#allActions" prefHeight="25.0" prefWidth="83.0" text="Add" />
+                     <Button fx:id="btUpDate" disable="true" layoutX="14.0" layoutY="355.0" mnemonicParsing="false" onAction="#allActions" prefHeight="25.0" prefWidth="83.0" text="Update" />
+                     <Button fx:id="btDelete" disable="true" layoutX="14.0" layoutY="403.0" mnemonicParsing="false" onAction="#allActions" prefHeight="25.0" prefWidth="83.0" text="Delete Data" />
+                     <ImageView fitHeight="96.0" fitWidth="107.0" layoutX="14.0" layoutY="439.0" pickOnBounds="true" preserveRatio="true">
+                        <image>
+                           <Image url="@../../../img.png" />
+                        </image>
+                     </ImageView>
+                  </children></AnchorPane>
+         </content>
+       </Tab>
+     </tabs>
+   </TabPane>
+</VBox>
