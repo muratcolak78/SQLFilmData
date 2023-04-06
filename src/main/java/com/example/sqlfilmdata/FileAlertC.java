@@ -3,6 +3,7 @@ package com.example.sqlfilmdata;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 
+import java.util.List;
 import java.util.Optional;
 
 public class FileAlertC {
@@ -45,6 +46,24 @@ public class FileAlertC {
         alert.showAndWait();
 
     }
+    public void alertInformation2(String title, List<String> list,String dialog){
+        alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(dialog);
+        String message= makeListString(list);
+        alert.setContentText(message);
+
+        alert.showAndWait();
+
+    }
+    public String makeListString(List<String> list){
+        String text="";
+        for(int i=0;i< list.size();i++){
+            text+=list.get(i)+"...\n";
+        }
+        return text;
+    }
+
 
 
 }

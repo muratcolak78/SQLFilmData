@@ -87,7 +87,7 @@ public class MakeFolderFileWriteAndRead {
             String line;
             while ((line = br.readLine()) != null) {
                 text += line + "\n";
-                System.out.println(text);
+                System.out.println("filereader "+text);
                 settingsData.add(line);
             }
         } finally {
@@ -111,6 +111,7 @@ public class MakeFolderFileWriteAndRead {
     }
 
     public void readExistFile() throws IOException {
+        settingsData.clear();
         BufferedReader br = new BufferedReader(new FileReader(file2));
         String text = "";
         try {

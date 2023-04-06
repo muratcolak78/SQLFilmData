@@ -2,24 +2,18 @@ package com.example.sqlfilmdata;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.collections.transformation.FilteredList;
-import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Background;
+import javafx.stage.FileChooser;
 
 import java.io.*;
-import java.net.URL;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.ResourceBundle;
 
 public class SQLController {
     @FXML
@@ -27,7 +21,7 @@ public class SQLController {
     @FXML
     private TextField TFUserName = new TextField();
     @FXML
-    public Label labelConnection = new Label();
+    public Label labelConnection = new Label(), lbWarning;
     @FXML
     private TableColumn<Film, String> clmTitle, clmDescrip, clmLanguage;
     @FXML
@@ -38,12 +32,6 @@ public class SQLController {
     private TableView table_Film;
     @FXML
     private TextField TFUrl = new TextField();
-    @FXML
-    private TextField tfLogUsername;
-    @FXML
-    private PasswordField tFLogPassword;
-    @FXML
-    private CheckBox keepMeLogged;
 
 
     @FXML
@@ -58,22 +46,42 @@ public class SQLController {
     private MakeFolderFileWriteAndRead fileX;
     private List<String> makeNullList = new ArrayList<>(Arrays.asList("", ""));
     private List<String> Listdata = new ArrayList<>();
-    private File file;
-
+    @FXML
+    private Hyperlink linkDelete = new Hyperlink();
 
     int index = -1;
-    FileAlertC alert = new FileAlertC();
+    private FileAlertC alert = new FileAlertC();
+    @FXML
+    private ObservableList<Film> dataList;
+    private DBConnection dbConnection = new DBConnection();
+    private Connection connection = null;
+    @FXML
+    private File file = new File("C:\\Users\\Public\\Documents\\mySQLFilmData2\\settings.txt");
+    private FileWriter fileWriter;
+    private String getPath;
+    private List<String> readedData;
+    private String userName;
+    private String passWord;
+    @FXML
+    private Button buttonDataSettinsDelete;
+    private List<String> information = new ArrayList<>();
 
-    ObservableList<Film> dataList;
+    @FXML
+    public void linkDelete() throws SQLException {
+        file.delete();
+        TFUserName.setText("");
+        TFPassword.setText("");
+        dataList.clear();
+        buttonDataSettinsDelete.setDisable(true);
+        table_Film.setVisible(false);
+        setTextFieldEditable(false);
+        setButtonsDisable(true);
+        TFUserName.setEditable(true);
+        TFPassword.setEditable(true);
+        updateTable(dataList);
+        connection.close();
+        alert.alertInformation("Settings", "Username ve Password verileri silindi", "");
 
-
-    DBConnection dbConnection = new DBConnection();
-    Connection connection = null;
-
-    public SQLController() throws IOException {
-        fileX = new MakeFolderFileWriteAndRead();
-        file = fileX.getFile2();
-        System.out.println("***" + fileX.getFile2().exists());
 
     }
 
@@ -82,90 +90,86 @@ public class SQLController {
 
         String misson = ((Button) e.getSource()).getText();
 
+
         switch (misson) {
             case "Get Connection":
-                if (fileX.getFile2().exists() && TFUserName.getText().isEmpty() && TFPassword.getText().isEmpty()) {
-                    fileX.readExistFile();
-                    fileX.makeFileAndaSave(fileX.getSettingsData());
-                    System.out.println(fileX.getSettingsData());
 
-                } else if (fileX.getFile2().exists() && !TFUserName.getText().isEmpty() || !TFPassword.getText().isEmpty()) {
-                    fileX.makeFileAndaSave(makeNullList);
-                    Listdata.clear();
-                    //fileX.getFile2().delete();
-                    Listdata.add(TFUserName.getText());
-                    Listdata.add(TFPassword.getText());
-                    fileX.makeFileAndaSave(Listdata);
+                userName = TFUserName.getText();
+                passWord = TFPassword.getText();
+                System.out.println(userName + "   " + passWord);
+
+                if (file.exists()) buttonDataSettinsDelete.setDisable(false);
+
+                if (userName.isEmpty() && passWord.isEmpty()) {
+                    System.out.println(" herikisi boşsa komutu çalıştı");
+
+                    if (file.exists()) {
+                        System.out.println(file.exists());
+                        System.out.println("dosya varsa koşulu çalıştı");
+
+                        List<String> readData = new ArrayList<>();
+                        String path = "C:\\Users\\Public\\Documents\\mySQLFilmData2\\settings.txt";
+                        fileReader(readData, path);
+                        userName = readData.get(0);
+                        passWord = readData.get(1);
+
+                        readData.clear();
+
+                        information.add("Kullanıcı adı ve şifre bilgileri settings datadan çekildi");
 
 
-                } else if (!fileX.getFile2().exists()) {
-                    if (TFUserName.getText().isEmpty() && TFPassword.getText().isEmpty()) {
-                        fileX.makeFileAndaSave(makeNullList);
-                        //fileX.getSettingsData().clear();
-                        updateTable(dataList);
-                    } else {
-                        Listdata.add(TFUserName.getText());
-                        Listdata.add(TFPassword.getText());
-
-                        fileX.makeFileAndaSave(Listdata);
-                        fileX.getSettingsData().clear();
-                        updateTable(dataList);
-                    }
-
-                } else {
-
-                }
-                System.out.println("--------" + TFUserName.getText());
-                System.out.println("********" + TFPassword.getText());
-
-                TFUserName.setText("");
-                TFPassword.setText("");
-                //makeTFPassive();
-                table_Film.setVisible(false);
-
-                System.out.println(fileX.getSettingsData());
-
-                //file.fileReader(this.file.getFile());
-                System.out.println(fileX.getSettingsData() + " " + fileX.getSettingsData().size());
-                if (fileX.getSettingsData().size() < 2) {
-                    alert.alertInformation("Connection", "  ", "Lütfen geçerli kullanıcı adı ve şifreyi giriniz");
-                    break;
-
-                } else {
-
-                    if (fileX.getSettingsData().size() > 0) {
-                        getDataFilm();
-                        updateTable(dataList);
-                        table_Film.setVisible(true);
-                        setTextFieldEditable(true);
-                        setButtonsDisable(false);
-                        alert.alertInformation("Connection", " Database bağlantısı", "Başarılı");
-                        break;
-                    } else {
-                        alert.alertInformation("Connection", " Database bağlantısı kurulamadı ", "Lütfen geçerli kullanıcı adı ve şifreyi giriniz");
+                    } else if (!file.exists()) {
+                        System.out.println("eğer iki fieldde boşsa ve dosya yoksa koşulu çalıştı");
+                        alert.alertError("Uyarı", "Lütfen kullanıcı adı ve şifre bilgilerini giriniz", "");
                         break;
                     }
+                } else {
+                    userName = TFUserName.getText();
+                    passWord = TFPassword.getText();
+
+                    System.out.println(" her iki field dolu koşulu çalıştı");
+
+                    makeFile();
+
+                    List<String> writeData = new ArrayList<>();
+                    String path = "C:\\Users\\Public\\Documents\\mySQLFilmData2\\settings.txt";
+
+                    writeData.add(userName);
+                    writeData.add(passWord);
+
+                    fileWriter(writeData, path);
+
+                    writeData.clear();
+
+                    TFUserName.setText("");
+                    TFPassword.setText("");
+                    information.add("Kullanıcı adı ve şifre settings datadan çekildi");
 
                 }
 
-            case "Delete Data Setting":
+                System.out.println("connection öncesi son durum");
+                System.out.println(userName + "--" + passWord);
 
-                fileX.getFile2().delete();
-                TFUrl.setText("");
-                TFUserName.setText("");
-                TFPassword.setText("");
-                makeTFactive();
-                //dataList.removeAll();
-                table_Film.setVisible(false);
-                setTextFieldEditable(false);
-                setButtonsDisable(true);
-                fileX.getSettingsData().clear();
+                getDataFilm();
+
                 updateTable(dataList);
-                fileX.setSettingsData(makeNullList);
-                Listdata.clear();
-                connection.close();
 
+                if (dataList.size() > 0) {
+                    table_Film.setVisible(true);
+                    setTextFieldEditable(true);
+                    setButtonsDisable(false);
+                    TFUserName.setEditable(false);
+                    TFPassword.setEditable(false);
 
+                    alert.alertInformation2("Connection", information, "Database Bağlantısı Başarılı");
+                } else {
+
+                    information.add("Geçersiz kullanıcı adı veya parola");
+                    alert.alertInformation2("Connection", information, "Database Bağlantısı Kurulamadı");
+
+                }
+
+                information.clear();
                 break;
 
             case "Add":
@@ -223,7 +227,7 @@ public class SQLController {
 
     public void updateTable(ObservableList<Film> liste) {
         System.out.println("update data çalıştı");
-        table_Film.setItems(liste);
+        this.table_Film.setItems(liste);
         col_id.setCellValueFactory(new PropertyValueFactory<Film, Integer>("film_id"));
         clmTitle.setCellValueFactory(new PropertyValueFactory<Film, String>("title"));
         clmDescrip.setCellValueFactory(new PropertyValueFactory<Film, String>("description"));
@@ -236,7 +240,7 @@ public class SQLController {
 
 
     public void delete() {
-        connection = dbConnection.getConnection(fileX.getSettingsData().get(0), fileX.getSettingsData().get(1));
+        connection = dbConnection.getConnection(userName, passWord);
         boolean sonuc = alert.alertConfirmation("Uyarı film birden fazla tablo ile ilişkili", tFID.getText() + " " + tFTitle.getText() + " isimli  film  silindiğinde  ilişkili tablolarda da silinecek  ", " Silmek için Eminmisiniz?");
 
         String sql3 = " SET FOREIGN_KEY_CHECKS = 0; delete from sakila.film where film_id= " + tFID.getText() + "; delete from sakila.film_actor where film_id= " + tFID.getText() + "; SET FOREIGN_KEY_CHECKS = 1;";
@@ -294,7 +298,7 @@ public class SQLController {
             language = 7;
         }
 
-        connection = dbConnection.getConnection(fileX.getSettingsData().get(0), fileX.getSettingsData().get(1));
+        connection = dbConnection.getConnection(userName, passWord);
         //String sql = "delete from sakila.film where film_id ="+tFID.getText()+";";
 
         String sql = "UPDATE sakila.film SET title='" + tFTitle.getText() + "',description='" + tFDescrip.getText() + "', language_id='" + language + "', release_year= '" + tFReleaseyear.getText() + "' , rental_duration='" + tFRentalDuration.getText() + "', rental_rate='" + tFRentalRage.getText() + "', length= 0, replacement_cost= 0.0, special_features=0, last_update = CURRENT_TIMESTAMP WHERE film_id=" + tFID.getText() + ";";
@@ -328,8 +332,7 @@ public class SQLController {
 
     public ObservableList<Film> getDataFilm() throws IOException {
 
-        //fileX.fileReader(this.file.getFile());
-        connection = dbConnection.getConnection(fileX.getSettingsData().get(0), fileX.getSettingsData().get(1));
+        connection = dbConnection.getConnection(userName, passWord);
         dataList = FXCollections.observableArrayList();
 
         try {
@@ -354,18 +357,18 @@ public class SQLController {
 
         } catch (Exception e) {
             System.out.println(e.getMessage());
-            System.out.println(" burası çalıştı");
+
             e.printStackTrace();
         }
-
+        System.out.println("data list eklemesi çalıştı");
         return dataList;
     }
 
     @FXML
     public ObservableList<Film> search() throws SQLException, IOException {
 
-        //ObservableList<Film> liste = getDataFilm();
-        connection = dbConnection.getConnection(fileX.getSettingsData().get(0), fileX.getSettingsData().get(1));
+
+        connection = dbConnection.getConnection(userName, passWord);
         ObservableList<Film> list = FXCollections.observableArrayList();
 
         try {
@@ -424,7 +427,7 @@ public class SQLController {
             language = 7;
         }
 
-        connection = dbConnection.getConnection(fileX.getSettingsData().get(0), fileX.getSettingsData().get(1));
+        connection = dbConnection.getConnection(userName, passWord);
 
         boolean sonuc = alert.alertConfirmation("Uyarı ", tFID.getText() + " " + tFTitle.getText() + " isimli  film listeye eklenecek", "Eminmisiniz?");
         String sql2 = "INSERT INTO sakila.film (title, description, language_id, release_year, rental_duration, rental_rate, length, replacement_cost, special_features, last_update) value ('" + tFTitle.getText() + "', '" + tFDescrip.getText() + "', '" + language + "', '" + tFReleaseyear.getText() + "', '" + tFRentalDuration.getText() + "', '" + tFRentalRage.getText() + "', 0, 0.0, 0, CURRENT_TIMESTAMP );";
@@ -469,7 +472,91 @@ public class SQLController {
         btUpDate.setDisable(trueOrFalse);
     }
 
+    public File folderAndFileMaker() {
+
+
+        return file;
+    }
+
+    public File makeFile() throws IOException {
+        folderMaker();
+        try {
+
+            file = new File("C:\\Users\\Public\\Documents\\mySQLFilmData2\\settings.txt");
+            file.createNewFile();
+
+        } catch (IOException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
+        }
+        return file;
+
+    }
+
+    public void folderMaker() throws IOException {
+        File folder = new File("C:\\Users\\Public\\Documents\\mySQLFilmData2");
+
+        if (folder.mkdirs()) {
+            System.out.println("Multiple directories are created!");
+        } else {
+            System.out.println("Failed to create multiple directories!");
+        }
+
+    }
+
+    public List<String> fileReader(List<String> readedData, String path) throws IOException {
+        BufferedReader fileReader = new BufferedReader(new FileReader(path));
+        String text = "";
+        try {
+            String line;
+            while ((line = fileReader.readLine()) != null) {
+                text += line + "\n";
+                System.out.println("filereader " + text);
+                readedData.add(line);
+
+            }
+            buttonDataSettinsDelete.setDisable(false);
+        } finally {
+            fileReader.close();
+        }
+        //alert.alertInformation("bilgilendirme", "dosyadan veriler okundu", path);
+        information.add("dosyadan veriler okundu");
+
+        return readedData;
+    }
+
+    @FXML
+    public void fileWriter(List<String> listWriteData, String path) throws IOException {
+        fileWriter = new FileWriter(path, false);
+        for (int i = 0; i < listWriteData.size(); i++) {
+            fileWriter.write(listWriteData.get(i) + "\n");
+        }
+        buttonDataSettinsDelete.setDisable(false);
+        fileWriter.close();
+        //alert.alertInformation("bilgilendirme", "Veriler dosyaya yazdırıldı", path);
+        information.add("Veriler dosyaya yazdırıldı");
+    }
+
+    @FXML
+    public void showSingleFileChooser() {
+        if (file.exists()) {
+            FileChooser fileChooser = new FileChooser();
+
+            fileChooser.setInitialDirectory(new File("C:\\Users\\Public\\Documents\\mySQLFilmData2"));
+            fileChooser.getExtensionFilters().addAll(
+                    new FileChooser.ExtensionFilter("Text Files", "*.txt")
+            );
+            File selectedFile = fileChooser.showOpenDialog(null);
+        } else {
+            alert.alertInformation("Dikkat", "Settings file bulunamadı", "Ana sayfada username ve password kaydediniz.");
+        }
+
+
+    }
+
 }
+
+
 
     /*
      önce observation list oluşturuyoruz:

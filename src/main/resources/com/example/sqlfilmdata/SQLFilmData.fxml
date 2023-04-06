@@ -24,7 +24,7 @@
      <menus>
        <Menu mnemonicParsing="false" text="File">
          <items>
-           <MenuItem fx:id="openFile" mnemonicParsing="false" text="Open" />
+           <MenuItem mnemonicParsing="false" onAction="#showSingleFileChooser" text="Open" />
                <MenuItem fx:id="saveFile" mnemonicParsing="false" text="Save" />
          </items>
        </Menu>
@@ -35,21 +35,13 @@
        </Menu>
      </menus>
    </MenuBar>
-   <AnchorPane prefHeight="45.0" prefWidth="850.0">
-      <children>
-         <TextField fx:id="TFUserName" layoutX="8.0" layoutY="5.0" prefHeight="25.0" prefWidth="137.0" promptText="user name" />
-         <PasswordField fx:id="TFPassword" layoutX="156.0" layoutY="5.0" promptText="pass word" />
-         <Button fx:id="BtDelete" layoutX="560.0" layoutY="5.0" mnemonicParsing="false" onAction="#allActions" prefHeight="25.0" prefWidth="149.0" text="Delete Data Setting" />
-         <Button fx:id="BtGetConnction" defaultButton="true" layoutX="321.0" layoutY="5.0" mnemonicParsing="false" onAction="#allActions" prefHeight="25.0" prefWidth="229.0" text="Get Connection" />
-      </children>
-   </AnchorPane>
-   <TabPane prefHeight="690.0" prefWidth="1169.0" tabClosingPolicy="UNAVAILABLE">
+   <TabPane prefHeight="766.0" prefWidth="1169.0" tabClosingPolicy="UNAVAILABLE">
      <tabs>
        <Tab fx:id="clmId" text="Film">
          <content>
-           <AnchorPane prefHeight="605.0" prefWidth="1169.0"> 
+           <AnchorPane prefHeight="736.0" prefWidth="1169.0"> 
                   <children>
-                     <TableView fx:id="table_Film" layoutX="183.0" layoutY="82.0" onMouseClicked="#getSelected" prefHeight="564.0" prefWidth="981.0" visible="false">
+                     <TableView fx:id="table_Film" layoutX="183.0" layoutY="82.0" onMouseClicked="#getSelected" prefHeight="613.0" prefWidth="981.0" visible="false">
                         <columns>
                            <TableColumn fx:id="col_id" prefWidth="26.0" text="ID" />
                            <TableColumn fx:id="clmTitle" prefWidth="146.0" text="Title" />
@@ -76,6 +68,10 @@
                            <Image url="@../../../img.png" />
                         </image>
                      </ImageView>
+                     <TextField fx:id="TFUserName" layoutX="641.0" layoutY="14.0" promptText="username" />
+                     <PasswordField fx:id="TFPassword" layoutX="805.0" layoutY="14.0" promptText="password" />
+                     <Button fx:id="BtGetConnction" defaultButton="true" layoutX="964.0" layoutY="14.0" mnemonicParsing="false" onAction="#allActions" prefHeight="25.0" prefWidth="141.0" text="Get Connection" />
+                     <Button fx:id="buttonDataSettinsDelete" disable="true" layoutX="964.0" layoutY="56.0" mnemonicParsing="false" onAction="#linkDelete" prefHeight="25.0" prefWidth="140.0" text="Delete Data Settings" />
                   </children></AnchorPane>
          </content>
        </Tab>

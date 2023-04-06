@@ -15,7 +15,7 @@ import java.io.IOException;
 public class SceneMaker {
 
         //public Stage stage= new Stage();
-       /* public void  sceneMaker(String fxmlName, int v1, int v2, String seTitle, Stage stage) throws IOException {
+       public void  sceneMaker(String fxmlName, int v1, int v2, String seTitle, Stage stage) throws IOException {
             FXMLLoader fxmlLoader = new FXMLLoader(SQLApplication.class.getResource(fxmlName));
             Scene scene = new Scene(fxmlLoader.load(), v1, v2);
             stage.setTitle(seTitle);
@@ -48,7 +48,7 @@ public class SceneMaker {
 
             stage.show();
 
-        }*/
+        }
     }
 
 
