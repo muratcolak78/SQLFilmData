@@ -21,8 +21,6 @@ public class SQLController {
     @FXML
     private TextField TFUserName = new TextField();
     @FXML
-    public Label labelConnection = new Label(), lbWarning;
-    @FXML
     private TableColumn<Film, String> clmTitle, clmDescrip, clmLanguage;
     @FXML
     private TableColumn<Film, Integer> col_id, clmRlesYear, clmRentDurat;
@@ -32,7 +30,6 @@ public class SQLController {
     private TableView table_Film;
     @FXML
     private TextField TFUrl = new TextField();
-
 
     @FXML
     private TextField tFID = new TextField(), tFTitle = new TextField(), tFDescrip = new TextField(), tFReleaseyear = new TextField(), tFLanguage = new TextField(), tFRentalRage = new TextField(), tFRentalDuration = new TextField();
@@ -44,8 +41,7 @@ public class SQLController {
     @FXML
     private Button BtGetConnction = new Button();
 
-    private List<String> makeNullList = new ArrayList<>(Arrays.asList("", ""));
-    private List<String> Listdata = new ArrayList<>();
+
     @FXML
     private Hyperlink linkDelete = new Hyperlink();
 
@@ -58,8 +54,7 @@ public class SQLController {
     @FXML
     private File file = new File("C:\\Users\\Public\\Documents\\mySQLFilmData2\\settings.txt");
     private FileWriter fileWriter;
-    private String getPath;
-    private List<String> readedData;
+
     private String userName;
     private String passWord;
     @FXML
@@ -299,13 +294,12 @@ public class SQLController {
         }
 
         connection = dbConnection.getConnection(userName, passWord);
-        //String sql = "delete from sakila.film where film_id ="+tFID.getText()+";";
 
         String sql = "UPDATE sakila.film SET title='" + tFTitle.getText() + "',description='" + tFDescrip.getText() + "', language_id='" + language + "', release_year= '" + tFReleaseyear.getText() + "' , rental_duration='" + tFRentalDuration.getText() + "', rental_rate='" + tFRentalRage.getText() + "', length= 0, replacement_cost= 0.0, special_features=0, last_update = CURRENT_TIMESTAMP WHERE film_id=" + tFID.getText() + ";";
         boolean sonuc = alert.alertConfirmation("Uyarı ", tFID.getText() + " " + tFTitle.getText() + " isimli  film güncellenecek", "Eminmisiniz?");
         System.out.println(sonuc);
         System.out.println(sql);
-        //'language.name='" + tFLanguage.getText() + "
+
         try {
             if (sonuc) {
                 PreparedStatement preparedStatement = connection.prepareStatement(sql);
@@ -373,7 +367,6 @@ public class SQLController {
 
         try {
 
-            String sql = "select film_id,title, description, release_year,language.name, rental_rate, rental_duration   from sakila.film inner join  sakila.language on sakila.film.language_id=language.language_id;";
             String sql2 = "select  film_id,title, description, release_year, name, rental_rate, rental_duration   from sakila.film inner join  sakila.language on sakila.film.language_id=language.language_id where title like '" + tFSearch.getText() + "%';";
             PreparedStatement ps = connection.prepareStatement(sql2);
             ResultSet resultSet = ps.executeQuery(sql2);
@@ -470,12 +463,6 @@ public class SQLController {
         btAd.setDisable(trueOrFalse);
         btDelete.setDisable(trueOrFalse);
         btUpDate.setDisable(trueOrFalse);
-    }
-
-    public File folderAndFileMaker() {
-
-
-        return file;
     }
 
     public File makeFile() throws IOException {
