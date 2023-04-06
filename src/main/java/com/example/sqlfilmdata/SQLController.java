@@ -43,7 +43,7 @@ public class SQLController {
     private Button BtSave = new Button(), BtDelete = new Button(), btAd = new Button(), btUpDate = new Button(), btDelete = new Button();
     @FXML
     private Button BtGetConnction = new Button();
-    private MakeFolderFileWriteAndRead fileX;
+
     private List<String> makeNullList = new ArrayList<>(Arrays.asList("", ""));
     private List<String> Listdata = new ArrayList<>();
     @FXML

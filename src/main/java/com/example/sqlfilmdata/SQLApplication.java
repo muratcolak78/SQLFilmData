@@ -9,9 +9,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 
 public class SQLApplication extends Application {
-    @FXML
-    private SceneMaker sceneMaker=new SceneMaker();
-    @Override
+      @Override
     public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(SQLApplication.class.getResource("SQLFilmData.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 1209, 817);
